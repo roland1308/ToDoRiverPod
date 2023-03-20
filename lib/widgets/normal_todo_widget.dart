@@ -3,15 +3,17 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../models/todo_model.dart';
-import '../providers/provider.dart';
+import '../providers/state.dart';
 
 class NormalToDo extends HookConsumerWidget {
-  const NormalToDo({Key? key, required this.toDo}) : super(key: key);
+  const NormalToDo({Key? key, required this.index}) : super(key: key);
 
-  final ToDo toDo;
+  final int index;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final toDo = ref.read(todosProvider)[index];
+
     final animationController = useAnimationController(
       initialValue: 1,
       duration: const Duration(milliseconds: 500),
@@ -23,8 +25,8 @@ class NormalToDo extends HookConsumerWidget {
       if (animationController.isDismissed) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           List<ToDo> newList =
-          List.from(ref.read(todosProvider.notifier).state);
-          newList.remove(toDo);
+              List.from(ref.read(todosProvider.notifier).state);
+          newList.removeAt(index);
           ref.read(todosProvider.notifier).state = newList;
           animationController.value = 1;
         });
@@ -37,7 +39,7 @@ class NormalToDo extends HookConsumerWidget {
       child: ListTile(
         onTap: () {
           ref.read(isEditingProvider.notifier).state = true;
-          ref.read(editingIdProvider.notifier).state = toDo.toDoId;
+          ref.read(editingIdProvider.notifier).state = index;
         },
         leading: CircleAvatar(
           child: Text(toDo.comment[0].toUpperCase()),
