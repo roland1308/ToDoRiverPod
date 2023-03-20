@@ -1,5 +1,4 @@
 
 To Do using RiverPod
 
-My first app using RiverPod as State Management.
-A simple TO DO app testing Cubit for state management.
+My first app using RiverPod and Hooks as State Management.

@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:to_do_riverpod/widgets/TodoSingleItem.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../models/todo_model.dart';
-import '../providers/todos_provider.dart';
+import '../providers/provider.dart';
+import '../widgets/list_of_todos.dart';
 
 class HomePage extends ConsumerWidget {
   const HomePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final toDos = ref.watch(todosProvider);
-
+    print("BUILD PAGE");
     return Scaffold(
       appBar: AppBar(
         title: const Text("To Do - RiverPod"),
@@ -22,17 +21,7 @@ class HomePage extends ConsumerWidget {
           tooltip: 'Add Item',
           child: const Icon(Icons.add)),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      body: ListView.builder(
-        itemCount: toDos.length,
-        padding: const EdgeInsets.symmetric(vertical: 8.0),
-        itemBuilder: (_, index) {
-          return Card(
-            child: ToDoSingleItem(
-              toDo: toDos[index],
-            ),
-          );
-        },
-      ),
+      body: const ListOfToDos(),
     );
   }
 
