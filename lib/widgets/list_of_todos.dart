@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../providers/state.dart';
+import '../constants/providers/state.dart';
 import 'todo_single_item.dart';
 
 class ListOfToDos extends ConsumerWidget {
@@ -14,7 +14,7 @@ class ListOfToDos extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     log("BUILD LIST");
-    final nrOfTodos = ref.watch(todosProvider.select((toDos) => toDos.length));
+    final nrOfTodos = ref.watch(toDosProvider.select((toDos) => toDos.length));
     return ListView.builder(
       itemCount: nrOfTodos,
       padding: const EdgeInsets.symmetric(vertical: 8.0),

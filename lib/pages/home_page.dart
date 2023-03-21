@@ -3,12 +3,15 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../constants/constants.dart';
+import '../constants/providers/state.dart';
 import '../models/todo_model.dart';
-import '../providers/state.dart';
+import '../repository/todos_repository.dart';
+import '../widgets/error_db_widget.dart';
 import '../widgets/list_of_todos.dart';
 
 class HomePage extends ConsumerWidget {
-  const HomePage({Key? key}) : super(key: key);
+  HomePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -19,7 +22,9 @@ class HomePage extends ConsumerWidget {
       ),
       floatingActionButton: FloatingActionButton(
           key: const Key("addButton"),
-          onPressed: () => addNewComment(context, ref),
+          onPressed: () async {
+            addNewComment(context, ref);
+          },
           tooltip: 'Add Item',
           child: const Icon(Icons.add)),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
@@ -30,6 +35,7 @@ class HomePage extends ConsumerWidget {
   Future<void> addNewComment(BuildContext context, WidgetRef ref) async {
     final TextEditingController textEditingController =
         TextEditingController(text: "");
+    final navigator = Navigator.of(context);
     return showDialog<void>(
       context: context,
       builder: (BuildContext ctx) {
@@ -43,15 +49,23 @@ class HomePage extends ConsumerWidget {
           actions: <Widget>[
             TextButton(
               child: const Text('Add'),
-              onPressed: () {
+              onPressed: () async {
                 if (textEditingController.text != "") {
-                  List<ToDo> newList =
-                      List.from(ref.read(todosProvider.notifier).state);
-                  newList.add(ToDo(
-                      toDoId: DateTime.now().millisecondsSinceEpoch,
-                      comment: textEditingController.text));
-                  ref.read(todosProvider.notifier).state = newList;
-                  Navigator.of(context).pop();
+                  final toDo = <String, dynamic>{
+                    "comment": textEditingController.text,
+                    "toDoId": DateTime.now().millisecondsSinceEpoch,
+                  };
+                  bool addResult = await kRepository().addTodo(toDo);
+                  if (addResult) {
+                    List<ToDo> newList =
+                        List.from(ref.read(toDosProvider.notifier).state);
+                    newList.add(ToDo.fromJson(toDo));
+                    ref.read(toDosProvider.notifier).state = newList;
+                    navigator.pop();
+                  } else {
+                    const ErrorDBWidget(
+                        "An error occurred while adding To Do, please retry.");
+                  }
                 }
               },
             ),

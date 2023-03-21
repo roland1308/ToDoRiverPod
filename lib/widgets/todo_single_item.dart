@@ -1,8 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:to_do_riverpod/providers/state.dart';
 import 'package:to_do_riverpod/widgets/editing_todo_widget.dart';
 import 'package:to_do_riverpod/widgets/normal_todo_widget.dart';
+
+import '../constants/providers/state.dart';
 
 class ToDoSingleItem extends ConsumerWidget {
   const ToDoSingleItem({Key? key, required this.index}) : super(key: key);
